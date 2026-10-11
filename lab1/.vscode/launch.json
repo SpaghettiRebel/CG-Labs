@@ -1,0 +1,48 @@
+{
+	"version": "0.2.0",
+	"configurations": [
+		{
+			// Working directory must be the project root: shaders are loaded by relative paths
+			"name": "Debug (gdb)",
+			"type": "cppdbg",
+			"request": "launch",
+			"program": "${workspaceFolder}/build-debug/vulkan-starter-app.exe",
+			"cwd": "${workspaceFolder}",
+			"MIMode": "gdb",
+			"miDebuggerPath": "C:/msys64/ucrt64/bin/gdb.exe",
+			"externalConsole": false,
+			"preLaunchTask": "build (debug)",
+			"setupCommands": [
+				{
+					"description": "Enable pretty-printing for gdb",
+					"text": "-enable-pretty-printing",
+					"ignoreFailures": true
+				},
+				{
+					// gdb disables ASLR by default, and Vulkan validation layer crashes on startup without it
+					"description": "Keep ASLR enabled",
+					"text": "-gdb-set disable-randomization off",
+					"ignoreFailures": false
+				}
+			]
+		},
+		{
+			"name": "Release",
+			"type": "cppdbg",
+			"request": "launch",
+			"program": "${workspaceFolder}/build-release/vulkan-starter-app.exe",
+			"cwd": "${workspaceFolder}",
+			"MIMode": "gdb",
+			"miDebuggerPath": "C:/msys64/ucrt64/bin/gdb.exe",
+			"externalConsole": false,
+			"preLaunchTask": "build (release)",
+			"setupCommands": [
+				{
+					"description": "Keep ASLR enabled",
+					"text": "-gdb-set disable-randomization off",
+					"ignoreFailures": false
+				}
+			]
+		}
+	]
+}
