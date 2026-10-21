@@ -1,0 +1,99 @@
+{
+	// Tasks run PowerShell directly instead of the default terminal shell:
+	// in Git Bash MSYS2 GCC loads incompatible DLLs from Git and fails silently.
+	// UTF-8 console output keeps non-ASCII paths in compiler errors readable and clickable.
+	"version": "2.0.0",
+	"tasks": [
+		{
+			"label": "build (debug)",
+			"detail": "Configures build-debug on the first run, then builds",
+			"type": "process",
+			"command": "powershell.exe",
+			"args": [
+				"-NoProfile",
+				"-Command",
+				"[Console]::OutputEncoding = [Text.Encoding]::UTF8; if (-not (Test-Path build-debug/CMakeCache.txt)) { cmake --preset mingw-debug; if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE } }; cmake --build --preset mingw-debug --parallel; exit $LASTEXITCODE"
+			],
+			"options": {
+				"cwd": "${workspaceFolder}"
+			},
+			"group": {
+				"kind": "build",
+				"isDefault": true
+			},
+			"problemMatcher": {
+				"base": "$gcc",
+				"fileLocation": ["autoDetect", "${workspaceFolder}"]
+			}
+		},
+		{
+			"label": "build (release)",
+			"detail": "Configures build-release on the first run, then builds",
+			"type": "process",
+			"command": "powershell.exe",
+			"args": [
+				"-NoProfile",
+				"-Command",
+				"[Console]::OutputEncoding = [Text.Encoding]::UTF8; if (-not (Test-Path build-release/CMakeCache.txt)) { cmake --preset mingw-release; if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE } }; cmake --build --preset mingw-release --parallel; exit $LASTEXITCODE"
+			],
+			"options": {
+				"cwd": "${workspaceFolder}"
+			},
+			"group": "build",
+			"problemMatcher": {
+				"base": "$gcc",
+				"fileLocation": ["autoDetect", "${workspaceFolder}"]
+			}
+		},
+		{
+			"label": "test (unit)",
+			"detail": "doctest unit tests: math, geometry, scene logic",
+			"type": "process",
+			"command": "${workspaceFolder}/build-debug/lab1-tests.exe",
+			"options": {
+				"cwd": "${workspaceFolder}"
+			},
+			"dependsOn": "build (debug)",
+			"group": "test",
+			"problemMatcher": {
+				"owner": "doctest",
+				"fileLocation": ["autoDetect", "${workspaceFolder}"],
+				"pattern": {
+					"regexp": "^(.*):(\\d+): (ERROR|WARNING): (.*)$",
+					"file": 1,
+					"line": 2,
+					"severity": 3,
+					"message": 4
+				}
+			}
+		},
+		{
+			"label": "test (integration)",
+			"detail": "Runs the app with validation and checks captured frames",
+			"type": "process",
+			"command": "powershell.exe",
+			"args": ["-NoProfile", "-ExecutionPolicy", "Bypass", "-File", "tests/integration/run.ps1"],
+			"options": {
+				"cwd": "${workspaceFolder}"
+			},
+			"dependsOn": "build (debug)",
+			"group": "test",
+			"problemMatcher": []
+		},
+		{
+			"label": "reconfigure (debug)",
+			"detail": "Rerun CMake, e.g. after adding source files",
+			"type": "process",
+			"command": "powershell.exe",
+			"args": [
+				"-NoProfile",
+				"-Command",
+				"[Console]::OutputEncoding = [Text.Encoding]::UTF8; cmake --preset mingw-debug; exit $LASTEXITCODE"
+			],
+			"options": {
+				"cwd": "${workspaceFolder}"
+			},
+			"problemMatcher": []
+		}
+	]
+}

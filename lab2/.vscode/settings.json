@@ -1,0 +1,11 @@
+{
+	"cmake.useCMakePresets": "always",
+	"cmake.debugConfig": {
+		"cwd": "${workspaceFolder}"
+	},
+	// Without --query-driver clangd takes MSVC target and doesn't find GCC standard headers
+	"clangd.arguments": [
+		"--compile-commands-dir=build-debug",
+		"--query-driver=C:/msys64/ucrt64/bin/*"
+	]
+}
