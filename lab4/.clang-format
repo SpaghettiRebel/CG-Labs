@@ -1,0 +1,15 @@
+# Matches the starter code style, so format on save doesn't rewrite the whole file
+BasedOnStyle: LLVM
+UseTab: AlignWithSpaces
+TabWidth: 4
+IndentWidth: 4
+ContinuationIndentWidth: 4
+ColumnLimit: 0
+AccessModifierOffset: -4
+IndentCaseLabels: false
+IndentGotoLabels: false
+PointerAlignment: Left
+Cpp11BracedListStyle: false
+AllowShortFunctionsOnASingleLine: None
+AllowShortLambdasOnASingleLine: None
+SortIncludes: Never
